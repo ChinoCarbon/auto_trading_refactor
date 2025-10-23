@@ -1,0 +1,156 @@
+ * Serving Flask app 'app'
+ * Debug mode: on
+[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://10.3.0.6:5000
+[33mPress CTRL+C to quit[0m
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 109-293-313
+223.65.133.25 - - [23/Oct/2025 00:31:57] "GET /api/users HTTP/1.1" 200 -
+223.65.133.25 - - [23/Oct/2025 00:31:58] "GET /api/positions/all HTTP/1.1" 200 -
+223.65.133.25 - - [23/Oct/2025 00:31:59] "GET /api/orders/all HTTP/1.1" 200 -
+223.65.133.25 - - [23/Oct/2025 00:32:02] "OPTIONS /api/orders/cancel_by_id HTTP/1.1" 200 -
+223.65.133.25 - - [23/Oct/2025 00:32:02] "POST /api/orders/cancel_by_id HTTP/1.1" 200 -
+223.65.133.25 - - [23/Oct/2025 00:32:04] "GET /api/orders/all HTTP/1.1" 200 -
+223.65.133.25 - - [23/Oct/2025 00:32:07] "POST /api/orders/cancel_by_id HTTP/1.1" 200 -
+223.65.133.25 - - [23/Oct/2025 00:32:08] "GET /api/orders/all HTTP/1.1" 200 -
+223.65.133.25 - - [23/Oct/2025 00:32:09] "OPTIONS /api/orders/cancel_by_id HTTP/1.1" 200 -
+[撤单] user=ashdjkahsdjagasjhfj ETHUSDT #8389765992392553843 200 {'orderId': 8389765992392553843, 'symbol': 'ETHUSDT', 'status': 'CANCELED', 'clientOrderId': '7ZBmcHVbAr5pwvQWs8OPmX', 'price': '0.00', 'avgPrice': '0.00', 'origQty': '0.000', 'executedQty': '0.000', 'cumQty': '0.000', 'cumQuote': '0.00000', 'timeInForce': 'GTC', 'type': 'TAKE_PROFIT_MARKET', 'reduceOnly': True, 'closePosition': True, 'side': 'SELL', 'positionSide': 'LONG', 'stopPrice': '5000.00', 'workingType': 'CONTRACT_PRICE', 'priceProtect': False, 'origType': 'TAKE_PROFIT_MARKET', 'priceMatch': 'NONE', 'selfTradePreventionMode': 'EXPIRE_MAKER', 'goodTillDate': 0, 'updateTime': 1761150722471}
+[撤单] user=ashdjkahsdjagasjhfj ETHUSDT #8389765992379508633 200 {'orderId': 8389765992379508633, 'symbol': 'ETHUSDT', 'status': 'CANCELED', 'clientOrderId': 'uaorlS8yQhnvFRtcDnwi40', 'price': '0.00', 'avgPrice': '0.00', 'origQty': '0.000', 'executedQty': '0.000', 'cumQty': '0.000', 'cumQuote': '0.00000', 'timeInForce': 'GTC', 'type': 'TAKE_PROFIT_MARKET', 'reduceOnly': True, 'closePosition': True, 'side': 'SELL', 'positionSide': 'LONG', 'stopPrice': '5000.00', 'workingType': 'CONTRACT_PRICE', 'priceProtect': False, 'origType': 'TAKE_PROFIT_MARKET', 'priceMatch': 'NONE', 'selfTradePreventionMode': 'EXPIRE_MAKER', 'goodTillDate': 0, 'updateTime': 1761150726557}
+[撤单] user=ashdjkahsdjagasjhfj ETHUSDT #8389765992379694436 200 {'orderId': 8389765992379694436, 'symbol': 'ETHUSDT', 'status': 'CANCELED', 'clientOrderId': 'Hs0VArCFqd8Pgb9mkXFwDP', 'price': '0.00', 'avgPrice': '0.00', 'origQty': '0.000', 'executedQty': '0.000', 'cumQty': '0.000', 'cumQuote': '0.00000', 'timeInForce': 'GTC', 'type': 'STOP_MARKET', 'reduceOnly': True, 'closePosition': True, 'side': 'SELL', 'positionSide': 'LONG', 'stopPrice': '3000.00', 'workingType': 'CONTRACT_PRICE', 'priceProtect': False, 'origType': 'STOP_MARKET', 'priceMatch': 'NONE', 'selfTradePreventionMode': 'EXPIRE_MAKER', 'goodTillDate': 0, 'updateTime': 1761150726644}
+[撤单] user=ashdjkahsdjagasjhfj ETHUSDT #8389765992393705378 200 {'orderId': 8389765992393705378, 'symbol': 'ETHUSDT', 'status': 'CANCELED', 'clientOrderId': 'anBMCcfQKA9NxHrXOwhHUz', 'price': '0.00', 'avgPrice': '0.00', 'origQty': '0.000', 'executedQty': '0.000', 'cumQty': '0.000', 'cumQuote': '0.00000', 'timeInForce': 'GTC', 'type': 'TAKE_PROFIT_MARKET', 'reduceOnly': True, 'closePosition': True, 'side': 'SELL', 'positionSide': 'LONG', 'stopPrice': '5000.00', 'workingType': 'CONTRACT_PRICE', 'priceProtect': False, 'origType': 'TAKE_PROFIT_MARKET', 'priceMatch': 'NONE', 'selfTradePreventionMode': 'EXPIRE_MAKER', 'goodTillDate': 0, 'updateTime': 1761150726734}
+[撤单] user=ashdjkahsdjagasjhfj ETHUSDT #8389765992379508687 200 {'orderId': 8389765992379508687, 'symbol': 'ETHUSDT', 'status': 'CANCELED', 'clientOrderId': 'QgMor63kQNcwl7o8kuXjWt', 'price': '0.00', 'avgPrice': '0.00', 'origQty': '0.000', 'executedQty': '0.000', 'cumQty': '0.000', 'cumQuote': '0.00000', 'timeInForce': 'GTC', 'type': 'STOP_MARKET', 'reduceOnly': True, 'closePosition': True, 'side': 'SELL', 'positionSide': 'LONG', 'stopPrice': '3000.00', 'workingType': 'CONTRACT_PRICE', 'priceProtect': False, 'origType': 'STOP_MARKET', 'priceMatch': 'NONE', 'selfTradePreventionMode': 'EXPIRE_MAKER', 'goodTillDate': 0, 'updateTime': 1761150726822}
+[撤单] user=ashdjkahsdjagasjhfj ETHUSDT #8389765992392554655 200 {'orderId': 8389765992392554655, 'symbol': 'ETHUSDT', 'status': 'CANCELED', 'clientOrderId': 'bZdjLiZe2EYz4ewxhPtoBb', 'price': '0.00', 'avgPrice': '0.00', 'origQty': '0.000', 'executedQty': '0.000', 'cumQty': '0.000', 'cumQuote': '0.00000', 'timeInForce': 'GTC', 'type': 'STOP_MARKET', 'reduceOnly': True, 'closePosition': True, 'side': 'SELL', 'positionSide': 'LONG', 'stopPrice': '3000.00', 'workingType': 'CONTRACT_PRICE', 'priceProtect': False, 'origType': 'STOP_MARKET', 'priceMatch': 'NONE', 'selfTradePreventionMode': 'EXPIRE_MAKER', 'goodTillDate': 0, 'updateTime': 1761150726914}
+[撤单] user=ashdjkahsdjagasjhfj ETHUSDT #8389765992393705805 200 {'orderId': 8389765992393705805, 'symbol': 'ETHUSDT', 'status': 'CANCELED', 'clientOrderId': 'TP3xUbJKWpLfdoQlYz7vs1', 'price': '0.00', 'avgPrice': '0.00', 'origQty': '0.000', 'executedQty': '0.000', 'cumQty': '0.000', 'cumQuote': '0.00000', 'timeInForce': 'GTC', 'type': 'STOP_MARKET', 'reduceOnly': True, 'closePosition': True, 'side': 'SELL', 'positionSide': 'LONG', 'stopPrice': '3000.00', 'workingType': 'CONTRACT_PRICE', 'priceProtect': False, 'origType': 'STOP_MARKET', 'priceMatch': 'NONE', 'selfTradePreventionMode': 'EXPIRE_MAKER', 'goodTillDate': 0, 'updateTime': 1761150727005}
+[撤单] user=ashdjkahsdjagasjhfj ETHUSDT #8389765992379693322 200 {'orderId': 8389765992379693322, 'symbol': 'ETHUSDT', 'status': 'CANCELED', 'clientOrderId': 'ty5CG3YNAKJMJkHUN2zGRe', 'price': '0.00', 'avgPrice': '0.00', 'origQty': '0.000', 'executedQty': '0.000', 'cumQty': '0.000', 'cumQuote': '0.00000', 'timeInForce': 'GTC', 'type': 'TAKE_PROFIT_MARKET', 'reduceOnly': True, 'closePosition': True, 'side': 'SELL', 'positionSide': 'LONG', 'stopPrice': '5000.00', 'workingType': 'CONTRACT_PRICE', 'priceProtect': False, 'origType': 'TAKE_PROFIT_MARKET', 'priceMatch': 'NONE', 'selfTradePreventionMode': 'EXPIRE_MAKER', 'goodTillDate': 0, 'updateTime': 1761150727102}
+[撤单] user=ashdjkahsdjagasjhfj ETHUSDT #8389765992380711961 200 {'orderId': 8389765992380711961, 'symbol': 'ETHUSDT', 'status': 'CANCELED', 'clientOrderId': 'ThRFE5jfXze1Bx7taiMNCM', 'price': '0.00', 'avgPrice': '0.00', 'origQty': '0.000', 'executedQty': '0.000', 'cumQty': '0.000', 'cumQuote': '0.00000', 'timeInForce': 'GTC', 'type': 'TAKE_PROFIT_MARKET', 'reduceOnly': True, 'closePosition': True, 'side': 'SELL', 'positionSide': 'LONG', 'stopPrice': '5000.00', 'workingType': 'CONTRACT_PRICE', 'priceProtect': False, 'origType': 'TAKE_PROFIT_MARKET', 'priceMatch': 'NONE', 'selfTradePreventionMode': 'EXPIRE_MAKER', 'goodTillDate': 0, 'updateTime': 1761150727192}
+[撤单] user=ashdjkahsdjagasjhfj ETHUSDT #8389765992380713881 200 {'orderId': 8389765992380713881, 'symbol': 'ETHUSDT', 'status': 'CANCELED', 'clientOrderId': 'nLW9jKOgkUBG3vnqPXNjhA', 'price': '0.00', 'avgPrice': '0.00', 'origQty': '0.000', 'executedQty': '0.000', 'cumQty': '0.000', 'cumQuote': '0.00000', 'timeInForce': 'GTC', 'type': 'STOP_MARKET', 'reduceOnly': True, 'closePosition': True, 'side': 'SELL', 'positionSide': 'LONG', 'stopPrice': '3000.00', 'workingType': 'CONTRACT_PRICE', 'priceProtect': False, 'origType': 'STOP_MARKET', 'priceMatch': 'NONE', 'selfTradePreventionMode': 'EXPIRE_MAKER', 'goodTillDate': 0, 'updateTime': 1761150727276}
+[撤单] user=qtsjkcjabnlmtagh7f6 ETHUSDT #8389765992379692391 200 {'orderId': 8389765992379692391, 'symbol': 'ETHUSDT', 'status': 'CANCELED', 'clientOrderId': 'uI5bOwcq0WEPJJ84q8gzwg', 'price': '0.00', 'avgPrice': '0.00', 'origQty': '0.000', 'executedQty': '0.000', 'cumQty': '0.000', 'cumQuote': '0.00000', 'timeInForce': 'GTC', 'type': 'TAKE_PROFIT_MARKET', 'reduceOnly': True, 'closePosition': True, 'side': 'SELL', 'positionSide': 'LONG', 'stopPrice': '5000.00', 'workingType': 'CONTRACT_PRICE', 'priceProtect': False, 'origType': 'TAKE_PROFIT_MARKET', 'priceMatch': 'NONE', 'selfTradePreventionMode': 'EXPIRE_MAKER', 'goodTillDate': 0, 'updateTime': 1761150729763}
+[撤单] user=qtsjkcjabnlmtagh7f6 ETHUSDT #8389765992380713319 200 {'orderId': 8389765992380713319, 'symbol': 'ETHUSDT', 'status': 'CANCELED', 'clientOrderId': 'oYx9RnX4gqds2ULm1w6UzO', 'price': '0.00', 'avgPrice': '0.00', 'origQty': '0.000', 'executedQty': '0.000', 'cumQty': '0.000', 'cumQuote': '0.00000', 'timeInForce': 'GTC', 'type': 'STOP_MARKET', 'reduceOnly': True, 'closePosition': True, 'side': 'SELL', 'positionSide': 'LONG', 'stopPrice': '3000.00', 'workingType': 'CONTRACT_PRICE', 'priceProtect': False, 'origType': 'STOP_MARKET', 'priceMatch': 'NONE', 'selfTradePreventionMode': 'EXPIRE_MAKER', 'goodTillDate': 0, 'updateTime': 1761150729853}
+223.65.133.25 - - [23/Oct/2025 00:32:10] "POST /api/orders/cancel_by_id HTTP/1.1" 200 -
+223.65.133.25 - - [23/Oct/2025 00:32:12] "GET /api/orders/all HTTP/1.1" 200 -
+223.65.133.25 - - [23/Oct/2025 00:32:17] "OPTIONS /api/orders/cancel_by_id HTTP/1.1" 200 -
+[撤单] user=qtsjkcjabnlmtagh7f6 ETHUSDT #8389765992393705600 200 {'orderId': 8389765992393705600, 'symbol': 'ETHUSDT', 'status': 'CANCELED', 'clientOrderId': 'uuoEeDf1pbSrezzxu2xge4', 'price': '0.00', 'avgPrice': '0.00', 'origQty': '0.000', 'executedQty': '0.000', 'cumQty': '0.000', 'cumQuote': '0.00000', 'timeInForce': 'GTC', 'type': 'TAKE_PROFIT_MARKET', 'reduceOnly': True, 'closePosition': True, 'side': 'SELL', 'positionSide': 'LONG', 'stopPrice': '5000.00', 'workingType': 'CONTRACT_PRICE', 'priceProtect': False, 'origType': 'TAKE_PROFIT_MARKET', 'priceMatch': 'NONE', 'selfTradePreventionMode': 'EXPIRE_MAKER', 'goodTillDate': 0, 'updateTime': 1761150729942}
+[撤单] user=qtsjkcjabnlmtagh7f6 ETHUSDT #8389765992393707683 200 {'orderId': 8389765992393707683, 'symbol': 'ETHUSDT', 'status': 'CANCELED', 'clientOrderId': 'raCZGmaADs20iz9hXy7Upd', 'price': '0.00', 'avgPrice': '0.00', 'origQty': '0.000', 'executedQty': '0.000', 'cumQty': '0.000', 'cumQuote': '0.00000', 'timeInForce': 'GTC', 'type': 'STOP_MARKET', 'reduceOnly': True, 'closePosition': True, 'side': 'SELL', 'positionSide': 'LONG', 'stopPrice': '3000.00', 'workingType': 'CONTRACT_PRICE', 'priceProtect': False, 'origType': 'STOP_MARKET', 'priceMatch': 'NONE', 'selfTradePreventionMode': 'EXPIRE_MAKER', 'goodTillDate': 0, 'updateTime': 1761150730032}
+[撤单] user=qtsjkcjabnlmtagh7f6 ETHUSDT #8389765992380711362 200 {'orderId': 8389765992380711362, 'symbol': 'ETHUSDT', 'status': 'CANCELED', 'clientOrderId': 'mlBUXksLpgbo3XejhBhqBx', 'price': '0.00', 'avgPrice': '0.00', 'origQty': '0.000', 'executedQty': '0.000', 'cumQty': '0.000', 'cumQuote': '0.00000', 'timeInForce': 'GTC', 'type': 'TAKE_PROFIT_MARKET', 'reduceOnly': True, 'closePosition': True, 'side': 'SELL', 'positionSide': 'LONG', 'stopPrice': '5000.00', 'workingType': 'CONTRACT_PRICE', 'priceProtect': False, 'origType': 'TAKE_PROFIT_MARKET', 'priceMatch': 'NONE', 'selfTradePreventionMode': 'EXPIRE_MAKER', 'goodTillDate': 0, 'updateTime': 1761150730150}
+[撤单] user=qtsjkcjabnlmtagh7f6 ETHUSDT #8389765992392552901 200 {'orderId': 8389765992392552901, 'symbol': 'ETHUSDT', 'status': 'CANCELED', 'clientOrderId': 'JXbvYRDdziDGeyfc75CQmp', 'price': '0.00', 'avgPrice': '0.00', 'origQty': '0.000', 'executedQty': '0.000', 'cumQty': '0.000', 'cumQuote': '0.00000', 'timeInForce': 'GTC', 'type': 'STOP_MARKET', 'reduceOnly': True, 'closePosition': True, 'side': 'SELL', 'positionSide': 'LONG', 'stopPrice': '3000.00', 'workingType': 'CONTRACT_PRICE', 'priceProtect': False, 'origType': 'STOP_MARKET', 'priceMatch': 'NONE', 'selfTradePreventionMode': 'EXPIRE_MAKER', 'goodTillDate': 0, 'updateTime': 1761150730237}
+[撤单] user=qtsjkcjabnlmtagh7f6 ETHUSDT #8389765992379508627 200 {'orderId': 8389765992379508627, 'symbol': 'ETHUSDT', 'status': 'CANCELED', 'clientOrderId': 'J82zft5BGaF94y731hcBDc', 'price': '0.00', 'avgPrice': '0.00', 'origQty': '0.000', 'executedQty': '0.000', 'cumQty': '0.000', 'cumQuote': '0.00000', 'timeInForce': 'GTC', 'type': 'TAKE_PROFIT_MARKET', 'reduceOnly': True, 'closePosition': True, 'side': 'SELL', 'positionSide': 'LONG', 'stopPrice': '5000.00', 'workingType': 'CONTRACT_PRICE', 'priceProtect': False, 'origType': 'TAKE_PROFIT_MARKET', 'priceMatch': 'NONE', 'selfTradePreventionMode': 'EXPIRE_MAKER', 'goodTillDate': 0, 'updateTime': 1761150730339}
+[撤单] user=qtsjkcjabnlmtagh7f6 ETHUSDT #8389765992379508677 200 {'orderId': 8389765992379508677, 'symbol': 'ETHUSDT', 'status': 'CANCELED', 'clientOrderId': '8wNaWSI8dXnX8jKLD3UNf0', 'price': '0.00', 'avgPrice': '0.00', 'origQty': '0.000', 'executedQty': '0.000', 'cumQty': '0.000', 'cumQuote': '0.00000', 'timeInForce': 'GTC', 'type': 'STOP_MARKET', 'reduceOnly': True, 'closePosition': True, 'side': 'SELL', 'positionSide': 'LONG', 'stopPrice': '3000.00', 'workingType': 'CONTRACT_PRICE', 'priceProtect': False, 'origType': 'STOP_MARKET', 'priceMatch': 'NONE', 'selfTradePreventionMode': 'EXPIRE_MAKER', 'goodTillDate': 0, 'updateTime': 1761150730424}
+[撤单] user=qtsjkcjabnlmtagh7f6 ETHUSDT #8389765992392551805 200 {'orderId': 8389765992392551805, 'symbol': 'ETHUSDT', 'status': 'CANCELED', 'clientOrderId': 'YrRhwdFsHhkGYavTbZidOS', 'price': '0.00', 'avgPrice': '0.00', 'origQty': '0.000', 'executedQty': '0.000', 'cumQty': '0.000', 'cumQuote': '0.00000', 'timeInForce': 'GTC', 'type': 'TAKE_PROFIT_MARKET', 'reduceOnly': True, 'closePosition': True, 'side': 'SELL', 'positionSide': 'LONG', 'stopPrice': '5000.00', 'workingType': 'CONTRACT_PRICE', 'priceProtect': False, 'origType': 'TAKE_PROFIT_MARKET', 'priceMatch': 'NONE', 'selfTradePreventionMode': 'EXPIRE_MAKER', 'goodTillDate': 0, 'updateTime': 1761150730512}
+[撤单] user=qtsjkcjabnlmtagh7f6 ETHUSDT #8389765992379693992 200 {'orderId': 8389765992379693992, 'symbol': 'ETHUSDT', 'status': 'CANCELED', 'clientOrderId': 'WsPC8gWARRjaUIw3euOcYw', 'price': '0.00', 'avgPrice': '0.00', 'origQty': '0.000', 'executedQty': '0.000', 'cumQty': '0.000', 'cumQuote': '0.00000', 'timeInForce': 'GTC', 'type': 'STOP_MARKET', 'reduceOnly': True, 'closePosition': True, 'side': 'SELL', 'positionSide': 'LONG', 'stopPrice': '3000.00', 'workingType': 'CONTRACT_PRICE', 'priceProtect': False, 'origType': 'STOP_MARKET', 'priceMatch': 'NONE', 'selfTradePreventionMode': 'EXPIRE_MAKER', 'goodTillDate': 0, 'updateTime': 1761150730599}
+[撤单] user=asfasfhdjkahsdjagaskjasgfa ETHUSDT #8389765992379508632 200 {'orderId': 8389765992379508632, 'symbol': 'ETHUSDT', 'status': 'CANCELED', 'clientOrderId': 'BBRvWkodPXYRSW7AhoAw1U', 'price': '0.00', 'avgPrice': '0.00', 'origQty': '0.000', 'executedQty': '0.000', 'cumQty': '0.000', 'cumQuote': '0.00000', 'timeInForce': 'GTC', 'type': 'TAKE_PROFIT_MARKET', 'reduceOnly': True, 'closePosition': True, 'side': 'SELL', 'positionSide': 'LONG', 'stopPrice': '5000.00', 'workingType': 'CONTRACT_PRICE', 'priceProtect': False, 'origType': 'TAKE_PROFIT_MARKET', 'priceMatch': 'NONE', 'selfTradePreventionMode': 'EXPIRE_MAKER', 'goodTillDate': 0, 'updateTime': 1761150738225}
+[撤单] user=asfasfhdjkahsdjagaskjasgfa ETHUSDT #8389765992379694603 200 {'orderId': 8389765992379694603, 'symbol': 'ETHUSDT', 'status': 'CANCELED', 'clientOrderId': 'da8HE4DhoUNvhyW9kmFdrP', 'price': '0.00', 'avgPrice': '0.00', 'origQty': '0.000', 'executedQty': '0.000', 'cumQty': '0.000', 'cumQuote': '0.00000', 'timeInForce': 'GTC', 'type': 'STOP_MARKET', 'reduceOnly': True, 'closePosition': True, 'side': 'SELL', 'positionSide': 'LONG', 'stopPrice': '3000.00', 'workingType': 'CONTRACT_PRICE', 'priceProtect': False, 'origType': 'STOP_MARKET', 'priceMatch': 'NONE', 'selfTradePreventionMode': 'EXPIRE_MAKER', 'goodTillDate': 0, 'updateTime': 1761150738353}
+[撤单] user=asfasfhdjkahsdjagaskjasgfa ETHUSDT #8389765992380711929 200 {'orderId': 8389765992380711929, 'symbol': 'ETHUSDT', 'status': 'CANCELED', 'clientOrderId': 'jOMiCAQlfXnI6jr99f7slp', 'price': '0.00', 'avgPrice': '0.00', 'origQty': '0.000', 'executedQty': '0.000', 'cumQty': '0.000', 'cumQuote': '0.00000', 'timeInForce': 'GTC', 'type': 'TAKE_PROFIT_MARKET', 'reduceOnly': True, 'closePosition': True, 'side': 'SELL', 'positionSide': 'LONG', 'stopPrice': '5000.00', 'workingType': 'CONTRACT_PRICE', 'priceProtect': False, 'origType': 'TAKE_PROFIT_MARKET', 'priceMatch': 'NONE', 'selfTradePreventionMode': 'EXPIRE_MAKER', 'goodTillDate': 0, 'updateTime': 1761150738459}
+[撤单] user=asfasfhdjkahsdjagaskjasgfa ETHUSDT #8389765992379508683 200 {'orderId': 8389765992379508683, 'symbol': 'ETHUSDT', 'status': 'CANCELED', 'clientOrderId': 'rG4KYnZu9aH3CZ6vvILYWi', 'price': '0.00', 'avgPrice': '0.00', 'origQty': '0.000', 'executedQty': '0.000', 'cumQty': '0.000', 'cumQuote': '0.00000', 'timeInForce': 'GTC', 'type': 'STOP_MARKET', 'reduceOnly': True, 'closePosition': True, 'side': 'SELL', 'positionSide': 'LONG', 'stopPrice': '3000.00', 'workingType': 'CONTRACT_PRICE', 'priceProtect': False, 'origType': 'STOP_MARKET', 'priceMatch': 'NONE', 'selfTradePreventionMode': 'EXPIRE_MAKER', 'goodTillDate': 0, 'updateTime': 1761150738545}
+223.65.133.25 - - [23/Oct/2025 00:32:18] "POST /api/orders/cancel_by_id HTTP/1.1" 200 -
+223.65.133.25 - - [23/Oct/2025 00:32:21] "GET /api/orders/all HTTP/1.1" 200 -
+167.94.138.171 - - [23/Oct/2025 01:16:30] "[33mGET / HTTP/1.1[0m" 404 -
+167.94.138.171 - - [23/Oct/2025 01:16:35] code 505, message Invalid HTTP version (2.0)
+167.94.138.171 - - [23/Oct/2025 01:16:35] "[35m[1mPRI * HTTP/2.0[0m" 505 -
+167.94.138.171 - - [23/Oct/2025 01:16:51] code 505, message Invalid HTTP version (2.0)
+167.94.138.171 - - [23/Oct/2025 01:16:51] "[35m[1mPRI * HTTP/2.0[0m" 505 -
+167.94.138.171 - - [23/Oct/2025 01:16:59] "[33mGET /security.txt HTTP/1.1[0m" 404 -
+3.134.148.59 - - [23/Oct/2025 01:25:51] "[33mGET / HTTP/1.1[0m" 404 -
+180.101.245.246 - - [23/Oct/2025 01:27:04] "[33mGET / HTTP/1.1[0m" 404 -
+59.83.208.108 - - [23/Oct/2025 01:27:27] "[33mGET / HTTP/1.1[0m" 404 -
+3.134.148.59 - - [23/Oct/2025 01:28:08] "[33mGET / HTTP/1.1[0m" 404 -
+3.134.148.59 - - [23/Oct/2025 01:29:01] code 400, message Bad request version ('À\x14À')
+3.134.148.59 - - [23/Oct/2025 01:29:01] "[31m[1m\x16\x03\x01\x00{\x01\x00\x00w\x03\x03¶ú\x1fò\x17X´ò©[Å±óõ\x02+CÚU+-ÚÏ\x03¥3\x8aívR,X\x00\x00\x1aÀ/À+À\x11À\x07À\x13À\x09À\x14À[0m" 400 -
+3.134.148.59 - - [23/Oct/2025 01:31:25] code 400, message Bad request syntax ('SSH-2.0-Go')
+3.134.148.59 - - [23/Oct/2025 01:31:25] "[31m[1mSSH-2.0-Go[0m" 400 -
+3.134.148.59 - - [23/Oct/2025 01:32:57] code 400, message Bad request version ('À\x14À')
+3.134.148.59 - - [23/Oct/2025 01:32:57] "[31m[1m\x16\x03\x01\x00{\x01\x00\x00w\x03\x03©ªó½­k Þô]ì\x88ü·@v\x14\x14Z)\x80%ÃÝ\x07j\x12í\x7ft%\x17\x00\x00\x1aÀ/À+À\x11À\x07À\x13À\x09À\x14À[0m" 400 -
+152.32.146.202 - - [23/Oct/2025 02:22:48] code 400, message Bad request version ('{\x8c*úÚ\x98´')
+152.32.146.202 - - [23/Oct/2025 02:22:48] "[31m[1m\x16\x03\x01\x01\x17\x01\x00\x01\x13\x03\x03*Ã7pÃc\x0cÊ\x11ñ\x17í¬~m\x1cØ0u\x8d\x19¹,å7ú¿\x85f¬ðK \x001*\x96Cð³»"!\x98¹À\x07º\\yÄ¿Ù\x80\x1d{\x8c*úÚ\x98´[0m" 400 -
+152.32.146.202 - - [23/Oct/2025 02:22:58] "[33mGET / HTTP/1.1[0m" 404 -
+152.32.146.202 - - [23/Oct/2025 02:22:58] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+152.32.146.202 - - [23/Oct/2025 02:22:58] "[33mGET /robots.txt HTTP/1.1[0m" 404 -
+152.32.146.202 - - [23/Oct/2025 02:22:59] "[33mGET /sitemap.xml HTTP/1.1[0m" 404 -
+180.101.245.246 - - [23/Oct/2025 02:27:35] "GET /api/users HTTP/1.1" 200 -
+180.101.245.246 - - [23/Oct/2025 02:27:36] "GET /api/positions/all HTTP/1.1" 200 -
+180.101.245.246 - - [23/Oct/2025 02:27:37] "GET /api/orders/all HTTP/1.1" 200 -
+147.185.132.63 - - [23/Oct/2025 06:37:18] "[33mGET / HTTP/1.1[0m" 404 -
+103.196.22.147 - - [23/Oct/2025 07:23:51] "GET /api/users HTTP/1.1" 200 -
+103.196.22.147 - - [23/Oct/2025 07:23:52] "GET /api/positions/all HTTP/1.1" 200 -
+103.196.22.147 - - [23/Oct/2025 07:23:52] "GET /api/orders/all HTTP/1.1" 200 -
+103.196.22.147 - - [23/Oct/2025 07:23:59] "GET /api/orders/all HTTP/1.1" 200 -
+103.196.22.147 - - [23/Oct/2025 07:24:01] "GET /api/symbols/usdt HTTP/1.1" 200 -
+103.196.22.147 - - [23/Oct/2025 07:24:07] "GET /api/leverage/symbol/0GUSDT HTTP/1.1" 200 -
+103.196.22.147 - - [23/Oct/2025 07:43:15] "GET /api/users HTTP/1.1" 200 -
+103.196.22.147 - - [23/Oct/2025 07:43:16] "GET /api/positions/all HTTP/1.1" 200 -
+103.196.22.147 - - [23/Oct/2025 07:43:17] "GET /api/orders/all HTTP/1.1" 200 -
+157.254.154.46 - - [23/Oct/2025 07:58:05] "GET /api/users HTTP/1.1" 200 -
+157.254.154.46 - - [23/Oct/2025 07:58:06] "GET /api/positions/all HTTP/1.1" 200 -
+157.254.154.46 - - [23/Oct/2025 07:58:06] "GET /api/orders/all HTTP/1.1" 200 -
+157.254.154.46 - - [23/Oct/2025 07:58:13] "GET /api/users HTTP/1.1" 200 -
+157.254.154.46 - - [23/Oct/2025 07:58:14] "GET /api/positions/all HTTP/1.1" 200 -
+157.254.154.46 - - [23/Oct/2025 07:58:14] "GET /api/orders/all HTTP/1.1" 200 -
+103.196.22.147 - - [23/Oct/2025 09:17:27] "GET /api/users HTTP/1.1" 200 -
+103.196.22.147 - - [23/Oct/2025 09:17:28] "GET /api/positions/all HTTP/1.1" 200 -
+103.196.22.147 - - [23/Oct/2025 09:17:29] "GET /api/orders/all HTTP/1.1" 200 -
+65.49.20.66 - - [23/Oct/2025 10:05:11] "[33mGET / HTTP/1.1[0m" 404 -
+65.49.20.66 - - [23/Oct/2025 10:05:27] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+209.38.99.217 - - [23/Oct/2025 10:07:41] "[33mGET / HTTP/1.1[0m" 404 -
+209.38.99.217 - - [23/Oct/2025 10:07:41] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+113.121.183.68 - - [23/Oct/2025 10:08:44] "GET /api/users HTTP/1.1" 200 -
+113.121.183.68 - - [23/Oct/2025 10:08:45] "GET /api/positions/all HTTP/1.1" 200 -
+113.121.183.68 - - [23/Oct/2025 10:08:47] "GET /api/orders/all HTTP/1.1" 200 -
+91.126.32.188 - - [23/Oct/2025 10:54:52] "[33mGET / HTTP/1.0[0m" 404 -
+113.121.183.68 - - [23/Oct/2025 11:17:37] "GET /api/users HTTP/1.1" 200 -
+113.121.183.68 - - [23/Oct/2025 11:17:37] "GET /api/positions/all HTTP/1.1" 200 -
+113.121.183.68 - - [23/Oct/2025 11:17:38] "GET /api/orders/all HTTP/1.1" 200 -
+42.193.132.4 - - [23/Oct/2025 12:09:40] "[33mGET / HTTP/1.1[0m" 404 -
+103.196.22.147 - - [23/Oct/2025 13:23:28] "GET /api/users HTTP/1.1" 200 -
+103.196.22.147 - - [23/Oct/2025 13:23:29] "GET /api/positions/all HTTP/1.1" 200 -
+103.196.22.147 - - [23/Oct/2025 13:23:29] "GET /api/symbols/usdt HTTP/1.1" 200 -
+103.196.22.147 - - [23/Oct/2025 13:23:30] "GET /api/orders/all HTTP/1.1" 200 -
+223.65.133.25 - - [23/Oct/2025 13:55:23] "GET /api/users HTTP/1.1" 200 -
+223.65.133.25 - - [23/Oct/2025 13:55:24] "GET /api/positions/all HTTP/1.1" 200 -
+223.65.133.25 - - [23/Oct/2025 13:55:24] "GET /api/orders/all HTTP/1.1" 200 -
+223.65.133.25 - - [23/Oct/2025 14:01:17] "GET /api/users HTTP/1.1" 200 -
+223.65.133.25 - - [23/Oct/2025 14:01:18] "GET /api/positions/all HTTP/1.1" 200 -
+223.65.133.25 - - [23/Oct/2025 14:01:18] "GET /api/orders/all HTTP/1.1" 200 -
+20.65.195.62 - - [23/Oct/2025 14:03:14] "[33mGET /v2/ HTTP/1.1[0m" 404 -
+223.65.133.25 - - [23/Oct/2025 14:04:26] "GET /api/users HTTP/1.1" 200 -
+223.65.133.25 - - [23/Oct/2025 14:04:27] "GET /api/positions/all HTTP/1.1" 200 -
+223.65.133.25 - - [23/Oct/2025 14:04:28] "GET /api/orders/all HTTP/1.1" 200 -
+223.65.133.25 - - [23/Oct/2025 14:04:31] "GET /api/users HTTP/1.1" 200 -
+223.65.133.25 - - [23/Oct/2025 14:04:32] "GET /api/positions/all HTTP/1.1" 200 -
+223.65.133.25 - - [23/Oct/2025 14:04:32] "GET /api/orders/all HTTP/1.1" 200 -
+223.65.133.25 - - [23/Oct/2025 14:04:49] "GET /api/users HTTP/1.1" 200 -
+223.65.133.25 - - [23/Oct/2025 14:04:50] "GET /api/positions/all HTTP/1.1" 200 -
+223.65.133.25 - - [23/Oct/2025 14:04:51] "GET /api/orders/all HTTP/1.1" 200 -
+223.65.133.25 - - [23/Oct/2025 14:12:32] "GET /api/users HTTP/1.1" 200 -
+223.65.133.25 - - [23/Oct/2025 14:12:33] "GET /api/positions/all HTTP/1.1" 200 -
+223.65.133.25 - - [23/Oct/2025 14:12:34] "GET /api/orders/all HTTP/1.1" 200 -
+223.65.133.25 - - [23/Oct/2025 14:12:49] "GET /api/users HTTP/1.1" 200 -
+223.65.133.25 - - [23/Oct/2025 14:12:50] "GET /api/positions/all HTTP/1.1" 200 -
+223.65.133.25 - - [23/Oct/2025 14:12:50] "GET /api/orders/all HTTP/1.1" 200 -
+223.65.133.25 - - [23/Oct/2025 14:17:42] "GET /api/users HTTP/1.1" 200 -
+223.65.133.25 - - [23/Oct/2025 14:17:43] "GET /api/positions/all HTTP/1.1" 200 -
+223.65.133.25 - - [23/Oct/2025 14:17:43] "GET /api/orders/all HTTP/1.1" 200 -
+223.65.133.25 - - [23/Oct/2025 14:18:32] "GET /api/users HTTP/1.1" 200 -
+223.65.133.25 - - [23/Oct/2025 14:18:33] "GET /api/positions/all HTTP/1.1" 200 -
+223.65.133.25 - - [23/Oct/2025 14:18:34] "GET /api/orders/all HTTP/1.1" 200 -
+223.65.133.25 - - [23/Oct/2025 14:18:45] "GET /api/users HTTP/1.1" 200 -
+223.65.133.25 - - [23/Oct/2025 14:18:46] "GET /api/positions/all HTTP/1.1" 200 -
+223.65.133.25 - - [23/Oct/2025 14:18:47] "GET /api/orders/all HTTP/1.1" 200 -
+223.65.133.25 - - [23/Oct/2025 14:18:54] "GET /api/users HTTP/1.1" 200 -
+223.65.133.25 - - [23/Oct/2025 14:18:55] "GET /api/positions/all HTTP/1.1" 200 -
+223.65.133.25 - - [23/Oct/2025 14:18:55] "GET /api/orders/all HTTP/1.1" 200 -
+223.65.133.25 - - [23/Oct/2025 14:19:02] "GET /api/users HTTP/1.1" 200 -
+223.65.133.25 - - [23/Oct/2025 14:19:03] "GET /api/positions/all HTTP/1.1" 200 -
+223.65.133.25 - - [23/Oct/2025 14:19:04] "GET /api/orders/all HTTP/1.1" 200 -
+ * Detected change in '/www/wwwroot/auto_trading_refactor/routes/orders_routes.py', reloading
+[撤单] user=asfasfhdjkahsdjagaskjasgfa ETHUSDT #8389765992379694257 200 {'orderId': 8389765992379694257, 'symbol': 'ETHUSDT', 'status': 'CANCELED', 'clientOrderId': 'Br7BGkUVZgw2ytF6rmKZ9c', 'price': '0.00', 'avgPrice': '0.00', 'origQty': '0.000', 'executedQty': '0.000', 'cumQty': '0.000', 'cumQuote': '0.00000', 'timeInForce': 'GTC', 'type': 'TAKE_PROFIT_MARKET', 'reduceOnly': True, 'closePosition': True, 'side': 'SELL', 'positionSide': 'LONG', 'stopPrice': '5000.00', 'workingType': 'CONTRACT_PRICE', 'priceProtect': False, 'origType': 'TAKE_PROFIT_MARKET', 'priceMatch': 'NONE', 'selfTradePreventionMode': 'EXPIRE_MAKER', 'goodTillDate': 0, 'updateTime': 1761150738634}
+[撤单] user=asfasfhdjkahsdjagaskjasgfa ETHUSDT #8389765992380713825 200 {'orderId': 8389765992380713825, 'symbol': 'ETHUSDT', 'status': 'CANCELED', 'clientOrderId': 'Ttxjxa6e7KqwyfOplyoPI8', 'price': '0.00', 'avgPrice': '0.00', 'origQty': '0.000', 'executedQty': '0.000', 'cumQty': '0.000', 'cumQuote': '0.00000', 'timeInForce': 'GTC', 'type': 'STOP_MARKET', 'reduceOnly': True, 'closePosition': True, 'side': 'SELL', 'positionSide': 'LONG', 'stopPrice': '3000.00', 'workingType': 'CONTRACT_PRICE', 'priceProtect': False, 'origType': 'STOP_MARKET', 'priceMatch': 'NONE', 'selfTradePreventionMode': 'EXPIRE_MAKER', 'goodTillDate': 0, 'updateTime': 1761150738723}
+ * Restarting with stat
+Traceback (most recent call last):
+  File "/www/wwwroot/auto_trading_refactor/app.py", line 3, in <module>
+    from routes.orders_routes import orders_bp
+  File "/www/wwwroot/auto_trading_refactor/routes/orders_routes.py", line 151
+    take_profit = round_tick(float(take_profit), tick_size)
+    ^
+IndentationError: expected an indented block after 'if' statement on line 148
