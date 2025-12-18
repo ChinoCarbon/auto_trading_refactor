@@ -87,6 +87,9 @@ def place_order_for_user(user, quantity, payload):
     usdt_amount = float(quantity)
     take_profit = payload.get("take_profit_price")
     stop_loss = payload.get("stop_loss_price")
+    
+    order_type = payload.get("type", "MARKET").upper()
+    limit_price = payload.get("price")  # 限价单价格（字符串）
 
     is_fast_order = payload.get("is_fast_order", False)
     fast_order_tp_percentage = payload.get("fast_order_tp_percentage", 0)
@@ -100,13 +103,26 @@ def place_order_for_user(user, quantity, payload):
         requests.post(f"{base_url}/fapi/v1/leverage?{lev_query}", headers=headers, timeout=5)
 
         # Step 2️⃣ 获取精度 & 最新价
-        price = get_latest_price(symbol, use_testnet)
         step_size, tick_size = get_symbol_precision(symbol, use_testnet)
-        if price == 0:
-            raise Exception(f"获取 {symbol} 最新价格失败")
+        
+        # 限价单逻辑
+        if order_type == "LIMIT":
+            if not limit_price:
+                raise Exception(f"限价单缺少 price 参数")
+            limit_price_float = float(limit_price)
+            limit_price_float = round_tick(limit_price_float, tick_size)
+            price_for_qty = limit_price_float  # 限价单用限价计算数量
+            price = limit_price_float  # 用于后续止盈止损计算
+            print(f"限价单价格: {limit_price_float}")
+        else:
+            # 市价单逻辑
+            price = get_latest_price(symbol, use_testnet)
+            if price == 0:
+                raise Exception(f"获取 {symbol} 最新价格失败")
+            price_for_qty = price
 
         # Step 3️⃣ 计算数量并修正精度
-        raw_qty = usdt_amount / price * leverage
+        raw_qty = usdt_amount / price_for_qty * leverage
         qty = round_step(raw_qty, step_size)
         if qty <= 0:
             raise Exception(f"{symbol} 计算数量无效: {qty}")
@@ -121,11 +137,17 @@ def place_order_for_user(user, quantity, payload):
         main_params = {
             "symbol": symbol,
             "side": side,
-            "type": "MARKET",
+            "type": order_type,
             "quantity": qty_str,
             "positionSide": position_side,
             "timestamp": int(time.time() * 1000)
         }
+        
+        # 限价单需要添加 price 和 timeInForce 参数
+        if order_type == "LIMIT":
+            main_params["price"] = limit_price_float
+            main_params["timeInForce"] = "GTC"  # Good Till Cancel，默认挂单直到成交或取消
+        
         main_query = sign_request(secret_key, main_params)
         main_resp = requests.post(f"{base_url}/fapi/v1/order?{main_query}", headers=headers, timeout=10)
         main_result = main_resp.json()
@@ -153,16 +175,17 @@ def place_order_for_user(user, quantity, payload):
             take_profit = round_tick(float(take_profit), tick_size)
             print(f"take_profit: {take_profit}")
             tp_params = {
+                "algoType": "CONDITIONAL",
                 "symbol": symbol,
                 "side": "SELL" if side == "BUY" else "BUY",
                 "type": "TAKE_PROFIT_MARKET",
-                "stopPrice": take_profit,
+                "triggerPrice": take_profit,
                 "closePosition": True,
                 "positionSide": position_side,
                 "timestamp": int(time.time() * 1000)
             }
             tp_query = sign_request(secret_key, tp_params)
-            tp_resp = requests.post(f"{base_url}/fapi/v1/order?{tp_query}", headers=headers, timeout=10)
+            tp_resp = requests.post(f"{base_url}/fapi/v1/algoOrder?{tp_query}", headers=headers, timeout=10)
             result["tp_order"] = tp_resp.json()
 
         if stop_loss or (is_fast_order and fast_order_sl_percentage > 0):
@@ -174,18 +197,19 @@ def place_order_for_user(user, quantity, payload):
             stop_loss = round_tick(float(stop_loss), tick_size)
             print(f"stop_loss: {stop_loss}")
             sl_params = {
+                "algoType": "CONDITIONAL",
                 "symbol": symbol,
                 "side": "SELL" if side == "BUY" else "BUY",
                 "type": "STOP_MARKET",
-                "stopPrice": stop_loss,
+                "triggerPrice": stop_loss,
                 "closePosition": True,
                 "positionSide": position_side,
                 "timestamp": int(time.time() * 1000)
             }
             sl_query = sign_request(secret_key, sl_params)
-            sl_resp = requests.post(f"{base_url}/fapi/v1/order?{sl_query}", headers=headers, timeout=10)
+            sl_resp = requests.post(f"{base_url}/fapi/v1/algoOrder?{sl_query}", headers=headers, timeout=10)
             result["sl_order"] = sl_resp.json()
-
+        print(f"result: {result}")
         return {"success": True, "alias": alias, "result": result}
 
     except Exception as e:
@@ -278,6 +302,91 @@ def get_all_orders():
     }), 200, {"Content-Type": "application/json; charset=utf-8"}
 
 
+@orders_bp.route("/algo/all", methods=["GET"])
+def get_all_algo_orders():
+    """
+    查询所有用户的条件单（止盈止损单）
+    安全修正版：
+    ✅ 强制 algoId / clientAlgoId 为字符串（防止精度丢失）
+    ✅ 响应时使用 json_dumps_params，保证 JSON 不自动转科学计数法
+    ✅ 兼容测试网 / 主网
+    """
+    users = load_api_keys()
+    all_users_data = []
+
+    for u in users:
+        if not u.get("is_active", True):
+            continue
+
+        alias = u.get("alias")
+        api_key = u.get("api_key")
+        secret_key = u.get("secret_key")
+        use_testnet = u.get("use_testnet", False)
+        base_url = BINANCE_TESTNET if use_testnet else BINANCE_BASE
+
+        try:
+            headers = {"X-MBX-APIKEY": api_key}
+            timestamp = int(time.time() * 1000)
+            params = {"timestamp": timestamp}
+            query = sign_request(secret_key, params)
+
+            # 获取所有条件单
+            url = f"{base_url}/fapi/v1/openAlgoOrders?{query}"
+            resp = requests.get(url, headers=headers, timeout=10)
+            resp.raise_for_status()
+            algo_orders = resp.json()
+
+            formatted_orders = []
+            for o in algo_orders:
+                # ✅ 强制字符串化所有ID防止丢精度
+                algo_id = str(o.get("algoId"))
+                client_algo_id = str(o.get("clientAlgoId", ""))
+
+                formatted_orders.append({
+                    "symbol": o.get("symbol"),
+                    "algoId": algo_id,
+                    "clientAlgoId": client_algo_id,
+                    "side": o.get("side"),
+                    "orderType": o.get("orderType"),  # 修正字段名：type -> orderType
+                    "type": o.get("orderType"),  # 保持兼容性
+                    "positionSide": o.get("positionSide"),
+                    "reduceOnly": o.get("reduceOnly"),
+                    "triggerPrice": str(o.get("triggerPrice", "")),
+                    "price": str(o.get("price", "")),
+                    "quantity": str(o.get("quantity", "")),
+                    "closePosition": o.get("closePosition"),
+                    "workingType": o.get("workingType"),
+                    "timeInForce": o.get("timeInForce"),
+                    "status": o.get("status"),
+                    "createTime": o.get("createTime"),
+                    "updateTime": o.get("updateTime"),
+                    "type_label": "algo_order"
+                })
+
+            all_users_data.append({
+                "user_id": str(u.get("id")),
+                "alias": alias,
+                "orders": formatted_orders,
+                "order_count": len(formatted_orders)
+            })
+
+        except Exception as e:
+            all_users_data.append({
+                "user_id": str(u.get("id")),
+                "alias": alias,
+                "orders": [],
+                "error": str(e)
+            })
+
+    # ✅ 使用 json_dumps_params 防止数字被自动转为科学计数法或 float
+    return jsonify({
+        "success": True,
+        "data": {
+            "users": all_users_data,
+            "timestamp": int(time.time() * 1000)
+        }
+    }), 200, {"Content-Type": "application/json; charset=utf-8"}
+
 
 @orders_bp.route("/cancel_by_id", methods=["POST"])
 def cancel_by_id():
@@ -350,11 +459,44 @@ def cancel_by_id():
 
         try:
             timestamp = int(time.time() * 1000)
+            # 先尝试撤销普通订单
             params = {"symbol": symbol, "orderId": order_id, "timestamp": timestamp}
             query = sign_request(secret_key, params)
             url = f"{base_url}/fapi/v1/order?{query}"
             resp = requests.delete(url, headers=headers, timeout=10)
             result_json = resp.json()
+
+            # 如果返回错误码 -4120，说明是条件单，需要使用新接口
+            if resp.status_code == 400 and result_json.get("code") == -4120:
+                # 查询条件单列表，撤销该symbol的所有条件单
+                # 注意：由于无法通过orderId直接匹配algoId，这里撤销该symbol的所有条件单
+                algo_query = sign_request(secret_key, {"timestamp": timestamp})
+                algo_url = f"{base_url}/fapi/v1/openAlgoOrders?{algo_query}"
+                algo_resp = requests.get(algo_url, headers=headers, timeout=10)
+                algo_resp.raise_for_status()
+                algo_orders = algo_resp.json()
+                
+                symbol_algo_orders = [o for o in algo_orders if o.get("symbol") == symbol]
+                if symbol_algo_orders:
+                    # 撤销该symbol的所有条件单
+                    cancelled_count = 0
+                    for algo_order in symbol_algo_orders:
+                        algo_id = algo_order.get("algoId")
+                        ts = int(time.time() * 1000)
+                        algo_params = {"symbol": symbol, "algoId": algo_id, "timestamp": ts}
+                        algo_query = sign_request(secret_key, algo_params)
+                        algo_cancel_url = f"{base_url}/fapi/v1/algoOrder?{algo_query}"
+                        algo_cancel_resp = requests.delete(algo_cancel_url, headers=headers, timeout=10)
+                        if algo_cancel_resp.status_code == 200:
+                            cancelled_count += 1
+                    
+                    if cancelled_count > 0:
+                        result_json = {"code": 200, "msg": f"成功撤销 {cancelled_count} 个条件单"}
+                        resp.status_code = 200
+                    else:
+                        result_json = {"code": -1, "msg": "撤销条件单失败"}
+                else:
+                    result_json = {"code": -1, "msg": "未找到匹配的条件单"}
 
             results.append({
                 "user_id": user_id,
@@ -387,27 +529,27 @@ def cancel_by_id():
 
 
 @orders_bp.route("/cancel_same", methods=["POST"])
-def cancel_same():
+def cancel_all_orders_for_symbol():
     """
-    撤销所有用户中“同一挂单”
-    匹配条件：symbol, side, type, price, positionSide (数量不计)
+    撤销所有用户中指定标的(symbol)的所有挂单（包括普通订单和条件单）
+    请求示例：
+    {
+        "symbol": "ETHUSDT"
+    }
     """
     data = request.get_json(force=True)
-    required = ["symbol", "price", "type", "side"]
-    for k in required:
-        if k not in data:
-            return jsonify({"success": False, "message": f"缺少参数 {k}"}), 400
+    symbol = data.get("symbol")
+    if not symbol:
+        return jsonify({"success": False, "message": "缺少参数 symbol"}), 400
 
-    symbol = data["symbol"].upper()
-    price = str(data["price"])
-    order_type = data["type"].upper()
-    side = data["side"].upper()
-    position_side = data.get("positionSide")
-
-    users = [u for u in load_api_keys() if u.get("is_active", True)]
+    symbol = symbol.upper()
     results = []
 
-    for u in users:
+    users = [u for u in load_api_keys() if u.get("is_active", True)]
+    print(f"开始批量撤销 {symbol} 的所有挂单（普通订单+条件单），共 {len(users)} 个用户")
+
+    # === 并发执行 ===
+    def cancel_for_user(u):
         alias = u["alias"]
         api_key = u["api_key"]
         secret_key = u["secret_key"]
@@ -415,104 +557,110 @@ def cancel_same():
         base_url = BINANCE_TESTNET if use_testnet else BINANCE_BASE
         headers = {"X-MBX-APIKEY": api_key}
 
+        user_result = {
+            "alias": alias,
+            "symbol": symbol,
+            "cancelled": 0,
+            "algo_cancelled": 0,
+            "orders": [],
+            "algo_orders": []
+        }
+
         try:
+            # 1️⃣ 撤销普通订单
             timestamp = int(time.time() * 1000)
             query = sign_request(secret_key, {"timestamp": timestamp})
-            resp = requests.get(f"{base_url}/fapi/v1/openOrders?{query}", headers=headers, timeout=10)
+            url = f"{base_url}/fapi/v1/openOrders?{query}"
+            resp = requests.get(url, headers=headers, timeout=10)
+            resp.raise_for_status()
             orders = resp.json()
 
-            print(f"\n=== 用户 {alias} 当前挂单 {len(orders)} 个 ===")
+            symbol_orders = [o for o in orders if o.get("symbol") == symbol]
+            print(f"\n=== 用户 {alias} {symbol} 普通挂单数量: {len(symbol_orders)} ===")
 
-            matched = []
-            debug_info = []
-
-            def float_equal(a, b, tol=1e-6):
-                try:
-                    return abs(float(a) - float(b)) < tol
-                except Exception:
-                    return False
-
-            def get_effective_price_field(order_type: str) -> str:
-                order_type = order_type.upper()
-                if order_type in ["STOP_MARKET", "TAKE_PROFIT_MARKET"]:
-                    return "stopPrice"
-                elif order_type in ["STOP", "TAKE_PROFIT"]:
-                    return "stopPrice"
-                elif order_type == "LIMIT":
-                    return "price"
-                else:
-                    return "price"
-
-            for o in orders:
-                o_symbol = o.get("symbol")
-                o_type = o.get("type", "").upper()
-                o_side = o.get("side", "").upper()
-                o_pos = o.get("positionSide", "")
-                o_id = o.get("orderId")
-
-                price_field = get_effective_price_field(o_type)
-                compare_price = o.get(price_field, "0")
-
-                reasons = []
-                if o_symbol != symbol:
-                    reasons.append(f"symbol不匹配({o_symbol})")
-                if not float_equal(compare_price, price):
-                    reasons.append(f"{price_field}不匹配({compare_price}, {price})")
-                if o_type != order_type:
-                    reasons.append(f"type不匹配({o_type})")
-                if o_side != side:
-                    reasons.append(f"side不匹配({o_side})")
-                if position_side and o_pos != position_side:
-                    reasons.append(f"positionSide不匹配({o_pos})")
-
-                if not reasons:
-                    matched.append(o)
-                    debug_info.append(f"✅ 匹配成功: {o_id} {o_symbol} {o_type} {o_side} {o_pos} {price_field}={compare_price}")
-                else:
-                    debug_info.append(
-                        f"❌ 未匹配: {o_id} {o_symbol} {o_type} {o_side} {o_pos} {price_field}={compare_price} | 原因: {', '.join(reasons)}"
-                    )
-            # 打印对比详情
-            print("\n".join(debug_info))
-
-            user_results = []
-            for o in matched:
-                timestamp = int(time.time() * 1000)
-                params = {"symbol": o["symbol"], "orderId": o["orderId"], "timestamp": timestamp}
+            for o in symbol_orders:
+                order_id = o.get("orderId")
+                ts = int(time.time() * 1000)
+                params = {"symbol": symbol, "orderId": order_id, "timestamp": ts}
                 query = sign_request(secret_key, params)
-                cancel_resp = requests.delete(f"{base_url}/fapi/v1/order?{query}", headers=headers, timeout=10)
-                user_results.append({
-                    "orderId": o["orderId"],
-                    "status_code": cancel_resp.status_code,
-                    "result": cancel_resp.json()
-                })
-                print(f"撤单: {alias} #{o['orderId']} {cancel_resp.status_code} {cancel_resp.text}")
+                cancel_url = f"{base_url}/fapi/v1/order?{query}"
+                cancel_resp = requests.delete(cancel_url, headers=headers, timeout=10)
 
-            results.append({
-                "alias": alias,
-                "matched_count": len(matched),
-                "debug": debug_info,
-                "cancel_results": user_results
-            })
+                try:
+                    result_json = cancel_resp.json()
+                except Exception:
+                    result_json = {"raw": cancel_resp.text}
+
+                print(f"[撤单] {alias} #{order_id} {cancel_resp.status_code} {result_json}")
+
+                user_result["orders"].append({
+                    "orderId": str(order_id),
+                    "status_code": cancel_resp.status_code,
+                    "result": result_json
+                })
+                if cancel_resp.status_code == 200:
+                    user_result["cancelled"] += 1
+
+            # 2️⃣ 撤销条件单
+            algo_query = sign_request(secret_key, {"timestamp": timestamp})
+            algo_url = f"{base_url}/fapi/v1/openAlgoOrders?{algo_query}"
+            algo_resp = requests.get(algo_url, headers=headers, timeout=10)
+            algo_resp.raise_for_status()
+            algo_orders = algo_resp.json()
+
+            symbol_algo_orders = [o for o in algo_orders if o.get("symbol") == symbol]
+            print(f"=== 用户 {alias} {symbol} 条件单数量: {len(symbol_algo_orders)} ===")
+
+            for o in symbol_algo_orders:
+                algo_id = o.get("algoId")
+                ts = int(time.time() * 1000)
+                params = {"symbol": symbol, "algoId": algo_id, "timestamp": ts}
+                query = sign_request(secret_key, params)
+                cancel_url = f"{base_url}/fapi/v1/algoOrder?{query}"
+                cancel_resp = requests.delete(cancel_url, headers=headers, timeout=10)
+
+                try:
+                    result_json = cancel_resp.json()
+                except Exception:
+                    result_json = {"raw": cancel_resp.text}
+
+                print(f"[撤条件单] {alias} algoId={algo_id} {cancel_resp.status_code} {result_json}")
+
+                user_result["algo_orders"].append({
+                    "algoId": str(algo_id),
+                    "status_code": cancel_resp.status_code,
+                    "result": result_json
+                })
+                if cancel_resp.status_code == 200:
+                    user_result["algo_cancelled"] += 1
+
+            return user_result
 
         except Exception as e:
-            results.append({
-                "alias": alias,
-                "error": str(e)
-            })
+            print(f"[错误] 用户 {alias} 撤单异常: {e}")
+            user_result["error"] = str(e)
+            return user_result
+
+    from concurrent.futures import ThreadPoolExecutor, as_completed
+
+    with ThreadPoolExecutor(max_workers=min(10, len(users))) as executor:
+        futures = [executor.submit(cancel_for_user, u) for u in users]
+        for f in as_completed(futures):
+            results.append(f.result())
+
+    total_cancelled = sum(r.get("cancelled", 0) for r in results if isinstance(r, dict))
 
     return jsonify({
         "success": True,
         "data": {
             "symbol": symbol,
-            "price": price,
-            "type": order_type,
-            "side": side,
-            "positionSide": position_side,
+            "user_count": len(users),
+            "total_cancelled": total_cancelled,
             "results": results,
             "timestamp": int(time.time() * 1000)
         }
     })
+
 
 
 @orders_bp.route("/batch_all", methods=["POST"])

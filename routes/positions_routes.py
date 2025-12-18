@@ -311,17 +311,18 @@ def set_take_profit_stop_loss():
 
                 if tp_qty > 0:
                     tp_params = {
+                        "algoType": "CONDITIONAL",
                         "symbol": symbol,
                         "side": reverse_side,
                         "type": "TAKE_PROFIT_MARKET",
-                        "stopPrice": str(tp_price.quantize(tick_size, rounding=ROUND_DOWN)),
+                        "triggerPrice": str(tp_price.quantize(tick_size, rounding=ROUND_DOWN)),
                         "positionSide": position_side,
                         "quantity": str(tp_qty),
                         "timestamp": int(time.time() * 1000),
                         "workingType": "CONTRACT_PRICE"
                     }
                     tp_query = sign_request(secret_key, tp_params)
-                    tp_url = f"{base_url}/fapi/v1/order?{tp_query}"
+                    tp_url = f"{base_url}/fapi/v1/algoOrder?{tp_query}"
                     tp_resp = requests.post(tp_url, headers=headers, timeout=10)
                     results_list.append({
                         "alias": alias,
@@ -342,17 +343,18 @@ def set_take_profit_stop_loss():
 
                 if sl_qty > 0:
                     sl_params = {
+                        "algoType": "CONDITIONAL",
                         "symbol": symbol,
                         "side": reverse_side,
                         "type": "STOP_MARKET",
-                        "stopPrice": str(sl_price.quantize(tick_size, rounding=ROUND_DOWN)),
+                        "triggerPrice": str(sl_price.quantize(tick_size, rounding=ROUND_DOWN)),
                         "positionSide": position_side,
                         "quantity": str(sl_qty),
                         "timestamp": int(time.time() * 1000),
                         "workingType": "CONTRACT_PRICE"
                     }
                     sl_query = sign_request(secret_key, sl_params)
-                    sl_url = f"{base_url}/fapi/v1/order?{sl_query}"
+                    sl_url = f"{base_url}/fapi/v1/algoOrder?{sl_query}"
                     sl_resp = requests.post(sl_url, headers=headers, timeout=10)
                     results_list.append({
                         "alias": alias,

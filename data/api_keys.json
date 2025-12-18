@@ -19,13 +19,22 @@
       "is_active": true
     },
     {
+      "id": "iasfiuiashdkjhaskjdhjkhjds",
+      "alias": "aaa",
+      "api_key": "iS6GpTzkxro4L382cf86Vw412ZVQdf53y7FgPwurZS91Svch6uctRaElegB0p5se",
+      "secret_key": "LH08rubUA334Cj4vPGoVL4jfI0kUNF11K93o5zDfvVpOcfL4uUWflSn96BpCaWPS",
+      "use_testnet": false,
+      "created_at": "2025-10-23T19:07:00Z",
+      "is_active": true
+    },
+    {
       "id": "asisg9dbciagkgwanlp",
       "alias": "测试账户",
       "api_key": "7381d2530713ed63d80c706892dab691435f4bafebd9c6c1026fca8b1ab3bb6d",
       "secret_key": "d9a7f32440d4f2187befa7e00efd30e9eb304469cc398ffe4bd86377caa9c77c",
       "use_testnet": true,
       "created_at": "2024-01-01T00:00:00Z",
-      "is_active": true
+      "is_active": false
     },
     {
       "id": "asfasfhdjkahsdjagaskjasgfa",
@@ -34,7 +43,7 @@
       "secret_key": "ssfR8C6ybF5sL2NWIxeFNsKr1k69Weqjp3UwpIsnYDoIeo4yAqDTAC4WgpYD2xio",
       "use_testnet": false,
       "created_at": "2024-01-01T00:00:00Z",
-      "is_active": true
+      "is_active": false
     }
   ]
 }
