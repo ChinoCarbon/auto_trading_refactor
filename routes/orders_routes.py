@@ -381,6 +381,8 @@ def get_all_algo_orders():
                 # ✅ 强制字符串化所有ID防止丢精度
                 algo_id = str(o.get("algoId"))
                 client_algo_id = str(o.get("clientAlgoId", ""))
+                # 币安条件单列表返回 algoStatus，无 status 字段
+                algo_status = o.get("algoStatus") or o.get("status")
 
                 formatted_orders.append({
                     "symbol": o.get("symbol"),
@@ -397,7 +399,8 @@ def get_all_algo_orders():
                     "closePosition": o.get("closePosition"),
                     "workingType": o.get("workingType"),
                     "timeInForce": o.get("timeInForce"),
-                    "status": o.get("status"),
+                    "status": algo_status,
+                    "algoStatus": algo_status,
                     "createTime": o.get("createTime"),
                     "updateTime": o.get("updateTime"),
                     "type_label": "algo_order"
