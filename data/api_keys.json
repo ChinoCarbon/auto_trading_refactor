@@ -34,16 +34,7 @@
       "secret_key": "d9a7f32440d4f2187befa7e00efd30e9eb304469cc398ffe4bd86377caa9c77c",
       "use_testnet": true,
       "created_at": "2024-01-01T00:00:00Z",
-      "is_active": false
-    },
-    {
-      "id": "asfasfhdjkahsdjagaskjasgfa",
-      "alias": "abc",
-      "api_key": "K7aIKLW7PT5wY75P2TCyAiTE6V5tTiWBJaZyzvXSwQtqLjeCxPZ5S33wCY8pTS3l",
-      "secret_key": "ssfR8C6ybF5sL2NWIxeFNsKr1k69Weqjp3UwpIsnYDoIeo4yAqDTAC4WgpYD2xio",
-      "use_testnet": false,
-      "created_at": "2024-01-01T00:00:00Z",
-      "is_active": false
+      "is_active": true
     }
   ]
 }

@@ -3,6 +3,8 @@ import time, json, hmac, hashlib, requests, math
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from utils.binance_precision import get_symbol_step_size, adjust_to_step_decimal
 from decimal import Decimal, ROUND_DOWN
+from services import paper_trading as paper
+
 positions_bp = Blueprint("positions", __name__)
 
 BINANCE_BASE = "https://fapi.binance.com"
@@ -33,6 +35,18 @@ def get_all_positions():
         base_url = BINANCE_TESTNET if use_testnet else BINANCE_BASE
 
         try:
+            if paper.is_paper_user(u):
+                wallet_rows, contract_rows = paper.build_positions_view(u["id"])
+                row = {
+                    "user_id": u.get("id"),
+                    "alias": alias,
+                    "positions": wallet_rows + contract_rows,
+                }
+                if request.args.get("include_paper_history", "").lower() == "true":
+                    row["paper_history"] = paper.get_history(u["id"], operations_limit=400)
+                all_users_data.append(row)
+                continue
+
             headers = {"X-MBX-APIKEY": api_key}
             timestamp = int(time.time() * 1000)
 
@@ -123,6 +137,61 @@ def get_all_positions():
         }
     })
 
+
+@positions_bp.route("/paper/history", methods=["GET"])
+def paper_position_history():
+    """
+    模拟盘（use_testnet）仓位历史：已平仓会话列表，可选附带当前未平仓合约。
+    Query:
+      user_id（必填）
+      symbol（可选）
+      position_side（可选 LONG|SHORT）
+      limit（默认100，最大500） offset order=desc|asc
+      include_open=true 附带当前持仓合约列表（与 /positions/all 中 contract 段形状一致）
+    """
+    user_id = request.args.get("user_id")
+    if not user_id:
+        return jsonify({"success": False, "message": "缺少 user_id"}), 400
+    u = next((x for x in load_api_keys() if x.get("id") == user_id and x.get("is_active", True)), None)
+    if not u:
+        return jsonify({"success": False, "message": "用户不存在或未激活"}), 404
+    if not paper.is_paper_user(u):
+        return jsonify({"success": False, "message": "仅模拟盘用户（use_testnet）可查询仓位历史"}), 400
+
+    ps = request.args.get("position_side")
+    if ps and ps.upper() not in ("LONG", "SHORT"):
+        return jsonify({"success": False, "message": "position_side 须为 LONG 或 SHORT"}), 400
+    try:
+        limit = min(max(int(request.args.get("limit", 100)), 1), 500)
+        offset = max(int(request.args.get("offset", 0)), 0)
+    except ValueError:
+        return jsonify({"success": False, "message": "limit/offset 无效"}), 400
+    order = request.args.get("order", "desc")
+    sym = request.args.get("symbol")
+    if sym:
+        sym = sym.strip().upper()
+    include_open = request.args.get("include_open", "").lower() == "true"
+
+    data = paper.get_position_session_history(
+        user_id,
+        symbol=sym or None,
+        position_side=ps.upper() if ps else None,
+        limit=limit,
+        offset=offset,
+        order=order,
+        include_open=include_open,
+    )
+    return jsonify({
+        "success": True,
+        "data": {
+            **data,
+            "user_id": user_id,
+            "alias": u.get("alias"),
+            "timestamp": int(time.time() * 1000),
+        },
+    })
+
+
 @positions_bp.route("/market-close", methods=["POST"])
 def market_close_all_users_dual_mode():
     """
@@ -159,6 +228,19 @@ def market_close_all_users_dual_mode():
             return {"alias": alias, "result": "用户未激活"}
 
         try:
+            if paper.is_paper_user(u):
+                r = paper.market_close(u["id"], symbol, position_side, close_ratio)
+                if r.get("error"):
+                    return {"alias": alias, "symbol": symbol, "position_side": position_side, "error": r["error"]}
+                return {
+                    "alias": alias,
+                    "symbol": symbol,
+                    "position_side": position_side,
+                    "close_amt": r.get("close_amt"),
+                    "status_code": r.get("status_code", 200),
+                    "result": r.get("result"),
+                }
+
             headers = {"X-MBX-APIKEY": api_key}
 
             # 获取仓位列表
@@ -300,6 +382,38 @@ def set_take_profit_stop_loss():
         results_list = []
 
         try:
+            if paper.is_paper_user(u):
+                step_sz, tick_sz = get_symbol_info(BINANCE_BASE, symbol)
+                mark_px = get_mark_price(BINANCE_BASE, symbol)
+                if mark_px <= 0:
+                    return {"alias": alias, "uid": uid, "error": "获取标记价格失败"}
+                tp_kw = {}
+                sl_kw = {}
+                if user_cfg.get("take_profit_price") and user_cfg.get("take_profit_amount"):
+                    tp_price = Decimal(str(user_cfg["take_profit_price"]))
+                    tp_usdt = Decimal(str(user_cfg["take_profit_amount"]))
+                    tp_qty = adjust_to_step_decimal(tp_usdt / mark_px, step_sz)
+                    if tp_qty > 0:
+                        tp_kw["take_profit_price"] = str(tp_price.quantize(tick_sz, rounding=ROUND_DOWN))
+                        tp_kw["take_profit_qty"] = str(tp_qty)
+                if user_cfg.get("stop_loss_price") and user_cfg.get("stop_loss_amount"):
+                    sl_price = Decimal(str(user_cfg["stop_loss_price"]))
+                    sl_usdt = Decimal(str(user_cfg["stop_loss_amount"]))
+                    sl_qty = adjust_to_step_decimal(sl_usdt / mark_px, step_sz)
+                    if sl_qty > 0:
+                        sl_kw["stop_loss_price"] = str(sl_price.quantize(tick_sz, rounding=ROUND_DOWN))
+                        sl_kw["stop_loss_qty"] = str(sl_qty)
+                plist = paper.place_tp_sl_orders(
+                    u["id"],
+                    symbol,
+                    position_side,
+                    take_profit_price=tp_kw.get("take_profit_price"),
+                    take_profit_qty=tp_kw.get("take_profit_qty"),
+                    stop_loss_price=sl_kw.get("stop_loss_price"),
+                    stop_loss_qty=sl_kw.get("stop_loss_qty"),
+                )
+                return {"alias": alias, "uid": uid, "orders": plist} if plist else {"alias": alias, "uid": uid, "result": "未挂单"}
+
             # === 止盈单 ===
             if user_cfg.get("take_profit_price") and user_cfg.get("take_profit_amount"):
                 tp_price = Decimal(str(user_cfg["take_profit_price"]))
