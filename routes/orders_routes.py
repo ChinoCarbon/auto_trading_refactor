@@ -88,6 +88,46 @@ def format_with_precision(value, step):
     fmt = f"{{:.{precision}f}}"
     return fmt.format(round(value, precision))
 
+
+def _is_leverage_error(resp_json):
+    if not isinstance(resp_json, dict):
+        return False
+    code = resp_json.get("code")
+    if code in (-4028, -2027):
+        return True
+    msg = str(resp_json.get("msg", "")).lower()
+    return "leverage" in msg and ("not valid" in msg or "invalid" in msg or "maximum" in msg)
+
+
+def _set_symbol_leverage(base_url, headers, secret_key, symbol, leverage):
+    ts = int(time.time() * 1000)
+    lev_params = {"symbol": symbol, "leverage": int(leverage), "timestamp": ts}
+    lev_query = sign_request(secret_key, lev_params)
+    resp = requests.post(f"{base_url}/fapi/v1/leverage?{lev_query}", headers=headers, timeout=5)
+    return resp.json()
+
+
+def _get_max_leverage_for_symbol(base_url, headers, secret_key, symbol):
+    """从 leverageBracket 读取该交易对允许的最大杠杆。"""
+    try:
+        params = {"symbol": symbol, "timestamp": int(time.time() * 1000)}
+        query = sign_request(secret_key, params)
+        resp = requests.get(
+            f"{base_url}/fapi/v1/leverageBracket?{query}", headers=headers, timeout=5
+        )
+        data = resp.json()
+        if isinstance(data, dict) and data.get("code"):
+            print(f"[WARN] 查询杠杆档位失败 {symbol}: {data}")
+            return 125
+        for item in data:
+            if item.get("symbol") == symbol:
+                brackets = item.get("brackets") or []
+                if brackets:
+                    return max(int(b.get("initialLeverage", 1)) for b in brackets)
+    except Exception as e:
+        print(f"[WARN] 获取最大杠杆失败 {symbol}: {e}")
+    return 125
+
 # ==================== 下单函数 ====================
 
 def place_order_for_user(user, quantity, payload):
@@ -103,7 +143,7 @@ def place_order_for_user(user, quantity, payload):
 
     symbol = payload["symbol"].upper()
     side = payload["side"].upper()
-    leverage = payload.get("leverage", 10)
+    leverage = int(payload.get("leverage", 10))
     usdt_amount = float(quantity)
     take_profit = payload.get("take_profit_price")
     stop_loss = payload.get("stop_loss_price")
@@ -116,11 +156,15 @@ def place_order_for_user(user, quantity, payload):
     fast_order_sl_percentage = payload.get("fast_order_sl_percentage", 0)
 
     try:
-        # Step 1️⃣ 设置杠杆
-        ts = int(time.time() * 1000)
-        lev_params = {"symbol": symbol, "leverage": leverage, "timestamp": ts}
-        lev_query = sign_request(secret_key, lev_params)
-        requests.post(f"{base_url}/fapi/v1/leverage?{lev_query}", headers=headers, timeout=5)
+        # Step 1️⃣ 设置杠杆（超限时自动降为该交易对最大杠杆）
+        lev_result = _set_symbol_leverage(base_url, headers, secret_key, symbol, leverage)
+        if _is_leverage_error(lev_result):
+            max_leverage = _get_max_leverage_for_symbol(base_url, headers, secret_key, symbol)
+            print(f"[INFO] {symbol} 杠杆 {leverage} 超限，改用最大杠杆 {max_leverage}")
+            leverage = max_leverage
+            lev_result = _set_symbol_leverage(base_url, headers, secret_key, symbol, leverage)
+            if _is_leverage_error(lev_result):
+                raise Exception(f"设置杠杆失败: {lev_result}")
 
         # Step 2️⃣ 获取精度 & 最新价
         step_size, tick_size = get_symbol_precision(symbol, use_testnet)
